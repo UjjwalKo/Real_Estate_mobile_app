@@ -23,16 +23,108 @@
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="realestate_app">
+  <meta name="apple-mobile-web-app-title" content="weight_and_balance">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>realestate_app</title>
+  <title>weight_and_balance</title>
   <link rel="manifest" href="manifest.json">
+
+  <script>
+    // The value below is injected by flutter build, do not touch.
+    var serviceWorkerVersion = null;
+  </script>
+  <!-- This script adds the flutter initialization JS code -->
+  <script src="flutter.js" defer></script>
+
+  <style>
+    :root {
+	    --yellow: #5194C0;
+	    --red: #2D6AAB;
+	    --blue: #164588;
+	    --violet: #0E3476;
+    }
+    	body {
+    	margin: 0;
+    	display: flex;
+    	justify-content: center;
+    	align-items: center;
+    	height: 100vh;
+    	background-color: #D5E6EF;
+      background-image: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,153,212,0) calc(15% + 100px), rgba(0,99,138,0) calc(85% + 100px), rgba(0,0,0,0.15) 100%);
+    }
+    div.container {
+    	display: flex;
+    	justify-content: center;
+    	align-items: center;
+    }
+    div > div {
+    	width: 2vw;
+    	height: 2vw;
+    	border-radius: 100%;
+    	margin: 2vw;
+    	background-image: linear-gradient(145deg, rgba(255,255,255,0.5) 0%, rgba(0,0,0,0) 100%);
+    	animation: bounce 1.5s 0.5s linear infinite;
+    }
+    .yellow {
+    	background-color: var(--yellow);
+    	animation-delay: 0.0s;
+    }
+
+    .red {
+    	background-color: var(--red);
+    	animation-delay: 0.15s;
+    }
+
+    .blue {
+    	background-color: var(--blue);
+    	animation-delay: 0.3s;
+    }
+
+    .violet {
+    	background-color: var(--violet);
+    	animation-delay: 0.45s;
+    }
+
+    @keyframes bounce {
+    	0%, 50%, 100% {
+    		transform: scale(1);
+    	}
+    	25% {
+    		transform: scale(0.8);
+    	}
+    	75% {
+    		transform: scale(1.2);
+    	}
+    }
+  </style>
 </head>
+
 <body>
-  <script src="flutter_bootstrap.js" async></script>
+<div class="container" id="loading">
+  <div class="yellow"></div>
+  <div class="red"></div>
+  <div class="blue"></div>
+  <div class="violet"></div>
+</div>
+  <script>
+    window.addEventListener('load', function(ev) {
+      var loading = document.querySelector('#loading');
+      // Download main.dart.js
+      _flutter.loader.loadEntrypoint({
+        serviceWorker: {
+          serviceWorkerVersion: serviceWorkerVersion,
+        },
+        onEntrypointLoaded: function(engineInitializer) {
+          engineInitializer.initializeEngine().then(function(appRunner) {
+            loading.remove();
+            appRunner.runApp();
+          });
+        }
+      });
+    });
+  </script>
 </body>
 </html>

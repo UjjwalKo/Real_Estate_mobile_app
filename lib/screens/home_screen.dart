@@ -3,10 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:realestate_app/screens/add_property_screen.dart';
 import 'package:realestate_app/screens/edit_property_screen.dart';
+import 'package:realestate_app/screens/property_details_screen.dart';
 import 'package:realestate_app/services/auth_service.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  String searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +24,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Properties'),
+        centerTitle: true,
         actions: [
           if (isAdmin)
             IconButton(
@@ -34,6 +42,30 @@ class HomeScreen extends StatelessWidget {
             },
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(60.0),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              onChanged: (value) {
+                setState(() {
+                  searchQuery = value.toLowerCase();
+                });
+              },
+              decoration: InputDecoration(
+                hintText: 'Search properties...',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: EdgeInsets.symmetric(vertical: 10.0),
+              ),
+            ),
+          ),
+        ),
       ),
       body: StreamBuilder(
         stream: _firestore.collection('properties').snapshots(),
@@ -44,7 +76,13 @@ class HomeScreen extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           }
-          final properties = snapshot.data!.docs;
+
+          final properties = snapshot.data!.docs.where((doc) {
+            final title = doc['title'].toString().toLowerCase();
+            final address = doc['address'].toString().toLowerCase();
+            return title.contains(searchQuery) || address.contains(searchQuery);
+          }).toList();
+
           return ListView.builder(
             itemCount: properties.length,
             itemBuilder: (context, index) {
@@ -129,7 +167,13 @@ class HomeScreen extends StatelessWidget {
                           SizedBox(height: 15),
                           ElevatedButton(
                             onPressed: () {
-                              // Implement More Info functionality
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      PropertyDetailsScreen(property: property),
+                                ),
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
