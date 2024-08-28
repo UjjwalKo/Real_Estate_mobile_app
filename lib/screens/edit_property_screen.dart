@@ -186,18 +186,4 @@ class _EditPropertyScreenState extends State<EditPropertyScreen> {
       ),
     );
   }
-
-  @override
-  void dispose() {
-    _imageController.dispose();
-    _titleController.dispose();
-    _priceController.dispose();
-    _squareFeetController.dispose();
-    _bedroomsController.dispose();
-    _bathroomsController.dispose();
-    _addressController.dispose();
-    _contactController.dispose();
-    _descriptionController.dispose(); // Dispose the new field
-    super.dispose();
-  }
 }
